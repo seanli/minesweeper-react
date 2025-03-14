@@ -31,6 +31,7 @@ const useGameState = () => {
       setStatus('ongoing');
     } catch (error) {
       console.error('Error starting new game:', error);
+      setStatus('error');
     } finally {
       setLoading(false);
     }
@@ -47,14 +48,9 @@ const useGameState = () => {
       });
       const data = await response.json();
       updateGameState(data);
-      
-      if (data.status !== 'ongoing') {
-        setTimeout(() => {
-          alert(data.status === 'won' ? 'Congratulations! You won!' : 'Game Over!');
-        }, 100);
-      }
     } catch (error) {
       console.error('Error revealing cell:', error);
+      setStatus('error');
     }
   }, [gameId, status, updateGameState]);
 
@@ -71,6 +67,7 @@ const useGameState = () => {
       updateGameState(data);
     } catch (error) {
       console.error('Error toggling flag:', error);
+      setStatus('error');
     }
   }, [gameId, status, updateGameState]);
 

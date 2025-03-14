@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import Board from './Board';
 import History from './History';
+import Toast from './Toast';
 import useGameState from '../hooks/useGameState';
 import '../styles/Game.css';
 
@@ -13,6 +14,30 @@ const GAME_INSTRUCTIONS = [
 
 const Game = () => {
   const { gameState, status, loading, startNewGame, revealCell, toggleFlag } = useGameState();
+  const [toast, setToast] = useState(null);
+
+  const showToast = useCallback((message, type) => {
+    setToast({ message, type });
+  }, []);
+
+  const handleGameEnd = useCallback((newStatus) => {
+    if (newStatus === 'won') {
+      showToast('Congratulations! You won! 🎉', 'success');
+    } else if (newStatus === 'lost') {
+      showToast('Game Over! Try again! 💣', 'error');
+    }
+  }, [showToast]);
+
+  const handleNewGame = useCallback(async () => {
+    showToast('Starting new game...', 'success');
+    await startNewGame();
+  }, [startNewGame, showToast]);
+
+  useEffect(() => {
+    if (status !== 'ongoing' && (status === 'won' || status === 'lost')) {
+      handleGameEnd(status);
+    }
+  }, [status, handleGameEnd]);
 
   useEffect(() => {
     startNewGame();
@@ -26,11 +51,18 @@ const Game = () => {
 
   return (
     <div className="game-container">
+      {toast && (
+        <Toast
+          message={toast.message}
+          type={toast.type}
+          onClose={() => setToast(null)}
+        />
+      )}
       <div className="game-header">
         <h1>Minesweeper</h1>
         <button 
           className="new-game-button" 
-          onClick={startNewGame}
+          onClick={handleNewGame}
           aria-label="Start New Game"
         >
           New Game
