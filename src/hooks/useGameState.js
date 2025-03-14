@@ -38,7 +38,16 @@ const useGameState = () => {
   }, [updateGameState]);
 
   const revealCell = useCallback(async (x, y) => {
-    if (!gameId || status !== 'ongoing') return;
+    if (!gameId || status !== 'ongoing' || !gameState) return;
+
+    // Optimistically update the UI
+    const newRevealed = gameState.revealed.map(row => [...row]);
+    newRevealed[y][x] = true;
+    
+    setGameState(prev => ({
+      ...prev,
+      revealed: newRevealed
+    }));
 
     try {
       const response = await fetch('/api/reveal', {
@@ -47,15 +56,32 @@ const useGameState = () => {
         body: JSON.stringify({ game_id: gameId, x, y })
       });
       const data = await response.json();
+      
+      // Update with actual server state
       updateGameState(data);
     } catch (error) {
       console.error('Error revealing cell:', error);
       setStatus('error');
+      
+      // Revert optimistic update on error
+      setGameState(prev => ({
+        ...prev,
+        revealed: gameState.revealed
+      }));
     }
-  }, [gameId, status, updateGameState]);
+  }, [gameId, status, gameState, updateGameState]);
 
   const toggleFlag = useCallback(async (x, y) => {
-    if (!gameId || status !== 'ongoing') return;
+    if (!gameId || status !== 'ongoing' || !gameState) return;
+
+    // Optimistically update the UI
+    const newFlags = gameState.flags.map(row => [...row]);
+    newFlags[y][x] = !newFlags[y][x];
+    
+    setGameState(prev => ({
+      ...prev,
+      flags: newFlags
+    }));
 
     try {
       const response = await fetch('/api/toggle-flag', {
@@ -64,12 +90,20 @@ const useGameState = () => {
         body: JSON.stringify({ game_id: gameId, x, y })
       });
       const data = await response.json();
+      
+      // Update with actual server state
       updateGameState(data);
     } catch (error) {
       console.error('Error toggling flag:', error);
       setStatus('error');
+      
+      // Revert optimistic update on error
+      setGameState(prev => ({
+        ...prev,
+        flags: gameState.flags
+      }));
     }
-  }, [gameId, status, updateGameState]);
+  }, [gameId, status, gameState, updateGameState]);
 
   return {
     gameState,
