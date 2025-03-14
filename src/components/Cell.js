@@ -1,73 +1,43 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { memo } from 'react';
+import useLongPress from '../hooks/useLongPress';
 import '../styles/Cell.css';
 
-const Cell = ({ value, revealed, flagged, onClick, onRightClick }) => {
-  const [longPressTriggered, setLongPressTriggered] = useState(false);
-  const timerRef = useRef(null);
-  const touchStartTime = useRef(0);
+const CELL_CONTENT = {
+  FLAG: '🚩',
+  MINE: '💣',
+  EMPTY: ''
+};
+
+const Cell = memo(({ value, revealed, flagged, onClick, onRightClick }) => {
+  const touchHandlers = useLongPress(onClick, onRightClick);
 
   const getCellContent = () => {
-    if (!revealed && flagged) return '🚩';
-    if (!revealed) return '';
-    if (value === -1) return '💣';
-    return value === 0 ? '' : value;
+    if (!revealed && flagged) return CELL_CONTENT.FLAG;
+    if (!revealed) return CELL_CONTENT.EMPTY;
+    if (value === -1) return CELL_CONTENT.MINE;
+    return value === 0 ? CELL_CONTENT.EMPTY : value;
   };
 
-  const getCellClass = () => {
-    let className = 'cell';
-    if (revealed) {
-      className += ' revealed';
-      if (value === -1) {
-        className += ' mine';
-      } else {
-        className += ` number-${value}`;
-      }
-    }
-    if (flagged) {
-      className += ' flagged';
-    }
-    return className;
-  };
-
-  const handleTouchStart = useCallback((e) => {
-    e.preventDefault();
-    touchStartTime.current = Date.now();
-    timerRef.current = setTimeout(() => {
-      setLongPressTriggered(true);
-      onRightClick(e);
-    }, 500);
-  }, [onRightClick]);
-
-  const handleTouchEnd = useCallback((e) => {
-    e.preventDefault();
-    clearTimeout(timerRef.current);
-    const touchDuration = Date.now() - touchStartTime.current;
-
-    if (!longPressTriggered && touchDuration < 500) {
-      onClick(e);
-    }
-    setLongPressTriggered(false);
-  }, [onClick, longPressTriggered]);
-
-  const handleTouchMove = useCallback((e) => {
-    e.preventDefault();
-    clearTimeout(timerRef.current);
-    setLongPressTriggered(false);
-  }, []);
+  const cellClassName = [
+    'cell',
+    revealed && 'revealed',
+    revealed && value === -1 && 'mine',
+    revealed && value > 0 && `number-${value}`,
+    flagged && 'flagged'
+  ].filter(Boolean).join(' ');
 
   return (
     <button
-      className={getCellClass()}
+      className={cellClassName}
       onClick={onClick}
       onContextMenu={onRightClick}
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      onTouchMove={handleTouchMove}
+      {...touchHandlers}
       disabled={revealed && !flagged}
+      aria-label={`Cell ${revealed ? 'revealed' : 'hidden'} ${flagged ? 'flagged' : ''}`}
     >
       {getCellContent()}
     </button>
   );
-};
+});
 
 export default Cell;
