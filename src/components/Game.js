@@ -43,7 +43,8 @@ const Game = () => {
     startNewGame();
   }, [startNewGame]);
 
-  if (loading || !gameState) {
+  // Show loading state only on initial load
+  if (!gameState) {
     return <div className="game-loading" role="alert">Loading...</div>;
   }
 
@@ -77,6 +78,7 @@ const Game = () => {
         flags={gameState.flags}
         onCellClick={revealCell}
         onCellRightClick={toggleFlag}
+        loading={loading}
       />
       <div className="game-instructions" role="complementary">
         {GAME_INSTRUCTIONS
