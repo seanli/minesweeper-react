@@ -1,70 +1,94 @@
-# Getting Started with Create React App
+# Minesweeper React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern, mobile-friendly implementation of the classic Minesweeper game built with React and Redis for state management.
 
-## Available Scripts
+## Features
 
-In the project directory, you can run:
+- 🎮 Classic Minesweeper gameplay
+- 📱 Mobile-optimized with touch controls
+- 🔄 Game state persistence with Redis
+- 🎯 Responsive design for all screen sizes
+- 🏆 Game history tracking
 
-### `npm start`
+## Prerequisites
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- Node.js 14.x or higher
+- npm 6.x or higher
+- An Upstash Redis database (for game state persistence)
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Setup
 
-### `npm test`
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/minesweeper-react.git
+   cd minesweeper-react
+   ```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
 
-### `npm run build`
+3. Set up environment variables:
+   - Copy `.env.example` to `.env`
+   - Fill in your Upstash Redis credentials:
+     ```
+     KV_REST_API_URL=your_upstash_redis_url_here
+     KV_REST_API_TOKEN=your_upstash_redis_token_here
+     ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## Development
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Start the development server:
+```bash
+npm start
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+The app will be available at [http://localhost:3000](http://localhost:3000).
 
-### `npm run eject`
+## Building for Production
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+Create a production build:
+```bash
+npm run build
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## Deployment
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+This project is configured for deployment on Vercel. Make sure to:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+1. Set up the required environment variables in your Vercel project settings
+2. Configure the build settings as specified in `vercel.json`
 
-## Learn More
+## Security Considerations
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Never commit `.env` files to version control
+- Keep your Redis credentials secure
+- Use environment variables for all sensitive configuration
+- Regularly update dependencies for security patches
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Controls
 
-### Code Splitting
+### Desktop
+- Left click: Reveal cell
+- Right click: Place/remove flag
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+### Mobile
+- Tap: Reveal cell
+- Long press: Place/remove flag
 
-### Analyzing the Bundle Size
+## Project Structure
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```
+├── api/              # Serverless API functions
+├── public/           # Static assets
+├── src/
+│   ├── components/   # React components
+│   ├── hooks/        # Custom React hooks
+│   └── styles/       # CSS styles
+└── vercel.json       # Vercel deployment config
+```
 
-### Making a Progressive Web App
+## License
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+MIT
