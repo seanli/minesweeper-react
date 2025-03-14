@@ -12,6 +12,8 @@
   cursor: pointer;
   transition: background-color 0.2s;
   user-select: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .cell:hover:not(.revealed) {
@@ -37,8 +39,13 @@
 
 @media (max-width: 480px) {
   .cell {
-    width: 30px;
-    height: 30px;
+    width: 35px;
+    height: 35px;
     font-size: 16px;
+    margin: 2px;
+  }
+
+  .cell.revealed {
+    font-size: 15px;
   }
 }
