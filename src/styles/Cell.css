@@ -10,10 +10,12 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
   user-select: none;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+  position: relative;
+  overflow: hidden;
 }
 
 .cell:hover:not(.revealed) {
@@ -48,4 +50,19 @@
   .cell.revealed {
     font-size: 15px;
   }
+
+  .cell:active {
+    transform: scale(0.95);
+    background-color: #bbb;
+  }
+
+  .cell.flagged {
+    animation: flag-pulse 0.3s ease-out;
+  }
+}
+
+@keyframes flag-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
